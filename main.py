@@ -2,7 +2,7 @@ import streamlit as st
 import random
 
 # 페이지 설정
-st.set_page_config(page_title="Mood Music 🎶", page_icon="🎵", layout="centered")
+st.set_page_config(page_title="Mood Music 🎶", page_icon="🎵", layout="wide")
 
 # CSS 스타일
 st.markdown("""
@@ -14,33 +14,55 @@ h1 {
     color: #ff6699;
     text-align: center;
     font-family: 'Comic Sans MS', cursive;
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+.stSelectbox label {
+    font-size: 22px;
+    color: #ff6699;
+    font-weight: bold;
+}
+.stSelectbox div[data-baseweb="select"] {
+    font-size: 20px;
 }
 .stButton>button {
     background-color: #ffb6c1;
     color: white;
-    border-radius: 20px;
-    padding: 10px 20px;
+    border-radius: 25px;
+    padding: 15px 30px;
     border: none;
-    font-size: 16px;
+    font-size: 20px;
+    width: 100%;
 }
 .stButton>button:hover {
     background-color: #ff8da1;
 }
 .song-card {
     background-color: white;
-    border-radius: 15px;
-    padding: 15px;
-    box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
-    margin: 10px 0;
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 4px 4px 15px rgba(0,0,0,0.15);
+    margin: 15px 0;
+    font-size: 20px;
+    width: 100%;
 }
 .song-title {
-    font-size: 18px;
+    font-size: 24px;
     font-weight: bold;
     color: #ff6699;
 }
 .song-artist {
-    font-size: 14px;
+    font-size: 18px;
     color: gray;
+}
+.song-link a {
+    font-size: 18px;
+    color: #ff6699;
+    font-weight: bold;
+    text-decoration: none;
+}
+.song-link a:hover {
+    text-decoration: underline;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -95,17 +117,23 @@ moods = {
 # 기분 선택
 mood = st.selectbox("💖 오늘 기분을 선택하세요!", list(moods.keys()))
 
+# 추천곡 저장용 세션 상태 초기화
+if "recommended_songs" not in st.session_state:
+    st.session_state.recommended_songs = []
+
 # 추천 버튼
 if st.button("🌟 노래 추천 받기 🌟"):
-    selected_songs = random.sample(moods[mood], 5)  # 5곡 랜덤 선택
-    for song in selected_songs:
-        st.markdown(
-            f"""
-            <div class="song-card">
-                <div class="song-title">{song['title']}</div>
-                <div class="song-artist">{song['artist']}</div>
-                <a href="{song['link']}" target="_blank">🎧 듣기</a>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+    st.session_state.recommended_songs = random.sample(moods[mood], 5)  # 매번 새로운 곡 5개 뽑기
+
+# 추천곡 출력
+for song in st.session_state.recommended_songs:
+    st.markdown(
+        f"""
+        <div class="song-card">
+            <div class="song-title">{song['title']}</div>
+            <div class="song-artist">{song['artist']}</div>
+            <div class="song-link"><a href="{song['link']}" target="_blank">🎧 듣기</a></div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )

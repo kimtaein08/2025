@@ -86,7 +86,7 @@ if q_idx == len(questions) - 1:
     if st.button("결과 보기"):
         # 점수 계산
         scores = {k:0 for k in results.keys()}
-        for i, ans in enumerate(st.session_state.answers):
+        for ans in st.session_state.answers:
             if ans:
                 scores[options[ans]] += 1 if ans in options else 0
         max_score = max(scores.values())
@@ -95,8 +95,3 @@ if q_idx == len(questions) - 1:
 
         st.subheader("✨ 당신의 영화 캐릭터 유형은?")
         st.success(results[final_type])
-
-        # 선택한 답변 표시
-        st.subheader("📝 당신이 선택한 답변")
-        for i, ans in enumerate(st.session_state.answers):
-            st.write(f"Q{i+1}. {ans}")

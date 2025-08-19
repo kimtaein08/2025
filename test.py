@@ -70,7 +70,7 @@ question, options = questions[q_idx]
 st.subheader(question)
 choice = st.radio("선택하세요:", list(options.keys()), key=q_idx)
 if choice:
-    st.session_state.answers[q_idx] = options[choice]
+    st.session_state.answers[q_idx] = choice
 
 # 이전/다음 버튼
 col1, col2 = st.columns(2)
@@ -84,13 +84,19 @@ with col2:
 # 마지막 질문에서 결과 버튼
 if q_idx == len(questions) - 1:
     if st.button("결과 보기"):
+        # 점수 계산
         scores = {k:0 for k in results.keys()}
-        for ans in st.session_state.answers:
+        for i, ans in enumerate(st.session_state.answers):
             if ans:
-                scores[ans] += 1
+                scores[options[ans]] += 1 if ans in options else 0
         max_score = max(scores.values())
         top_types = [t for t, s in scores.items() if s == max_score]
         final_type = random.choice(top_types)
 
         st.subheader("✨ 당신의 영화 캐릭터 유형은?")
         st.success(results[final_type])
+
+        # 선택한 답변 표시
+        st.subheader("📝 당신이 선택한 답변")
+        for i, ans in enumerate(st.session_state.answers):
+            st.write(f"Q{i+1}. {ans}")

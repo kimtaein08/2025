@@ -3,7 +3,7 @@ import random
 
 st.set_page_config(page_title="노래 추천 앱", layout="wide")
 
-st.title("🌟 기분에 맞는 랜덤 노래 추천기 🎶")
+st.title("🌟 기분에 따라 노래 추천해주는 사이트 🎶")
 st.write("당신의 기분을 선택하면 K-POP, POP, J-POP에서 랜덤으로 노래 5곡을 추천해드려요! 💖")
 
 # 감정 리스트

@@ -1,63 +1,72 @@
 import streamlit as st
 import random
 
-st.set_page_config(page_title="Mood Music Recommender", page_icon="🎶", layout="wide")
+st.set_page_config(page_title="Mood-based Music Recommender", layout="wide")
 
-# 감정별 노래 데이터 (Pop + K-pop 다양하게 확장)
+st.title("🎧 기분에 따라 노래 추천해주는 사이트 🎶")
+st.markdown("오늘 기분은 어때? 아래에서 골라봐! 😆🥲🤩😌🔥")
+
+# -----------------------
+# 기분 선택 UI (이모지 버튼 스타일)
+# -----------------------
+moods = {
+    "행복해요 😆": "happy",
+    "슬퍼요 🥲": "sad",
+    "신나요 🤩": "excited",
+    "차분해요 😌": "calm",
+    "열정적이에요 🔥": "energetic"
+}
+
+selected_mood = st.session_state.get("selected_mood", None)
+
+cols = st.columns(len(moods))
+for idx, (emoji_label, mood_value) in enumerate(moods.items()):
+    if cols[idx].button(emoji_label):
+        st.session_state.selected_mood = mood_value
+        selected_mood = mood_value
+
+# -----------------------
+# 노래 데이터베이스
+# -----------------------
 songs = {
-    "😊 행복": [
-        "BTS - Dynamite", "Red Velvet - Happiness", "Pharrell Williams - Happy",
-        "세븐틴 - 아주 NICE", "Bruno Mars - 24K Magic", "아이유 - 좋은 날",
-        "TWICE - Cheer Up", "Katy Perry - Firework", "Zico - Any Song", "ITZY - DALLA DALLA"
+    "happy": [
+        "BTS - Dynamite", "Red Velvet - Red Flavor", "Bruno Mars - Treasure",
+        "TWICE - Cheer Up", "Pharrell Williams - Happy",
+        "SEVENTEEN - Very Nice", "Katy Perry - Firework",
+        "IVE - I AM", "Taylor Swift - Shake It Off", "BLACKPINK - As If It’s Your Last"
     ],
-    "😢 슬픔": [
-        "Adele - Someone Like You", "백현 - 두근거려 (Beautiful)", "Billie Eilish - when the party's over",
-        "아이유 - 밤편지", "Coldplay - Fix You", "폴킴 - 모든 날, 모든 순간",
-        "Sam Smith - Too Good at Goodbyes", "G-DRAGON - 무제(無題)", "김광석 - 이등병의 편지", "Taeyeon - Fine"
+    "sad": [
+        "Adele - Someone Like You", "IU - Love Poem", "Billie Eilish - everything i wanted",
+        "Baekhyun - UN Village", "Sam Smith - Too Good at Goodbyes",
+        "Rosé - Gone", "Dean - instagram", "Coldplay - Fix You",
+        "Heize - You, Clouds, Rain", "Justin Bieber - Ghost"
     ],
-    "😡 화남": [
-        "Eminem - Lose Yourself", "방탄소년단 - MIC Drop", "Linkin Park - Numb",
-        "BLACKPINK - Kill This Love", "Stray Kids - God’s Menu", "Nirvana - Smells Like Teen Spirit",
-        "이승윤 - 들려주고 싶었던", "Doja Cat - Boss Bitch", "TWICE - I CAN’T STOP ME", "EXO - Monster"
+    "excited": [
+        "Stray Kids - God’s Menu", "BLACKPINK - DDU-DU DDU-DU", "Imagine Dragons - Believer",
+        "ITZY - Wannabe", "PSY - Gangnam Style",
+        "aespa - Next Level", "EXO - Power", "Beyoncé - Run the World (Girls)",
+        "NCT 127 - Kick It", "Lady Gaga - Poker Face"
     ],
-    "😌 차분": [
-        "IU - Palette", "Lauv - I Like Me Better", "백예린 - Square", "Dean - instagram",
-        "Ed Sheeran - Perfect", "폴킴 - 비", "Sam Smith - Stay With Me", 
-        "BOL4 - 우주를 줄게", "Shawn Mendes - Wonder", "태연 - 그대라는 시"
+    "calm": [
+        "Paul Kim - Every Day, Every Moment", "AKMU - Melted", "Ed Sheeran - Perfect",
+        "Taeyeon - Fine", "Lauv - I Like Me Better",
+        "Baek Yerin - Square", "Shawn Mendes - In My Blood (Acoustic)",
+        "IU - Through the Night", "John Legend - All of Me", "DAY6 - You Were Beautiful"
     ],
-    "🤩 신남": [
-        "PSY - 강남스타일", "BIGBANG - Bang Bang Bang", "Kesha - Tik Tok",
-        "TWICE - Dance The Night Away", "BTS - Idol", "Bruno Mars - Uptown Funk",
-        "ITZY - Wannabe", "KARINA - Hot & Cold", "Lady Gaga - Just Dance", "SEVENTEEN - Super"
+    "energetic": [
+        "TWICE - Fancy", "BTS - MIC Drop", "Dua Lipa - Don’t Start Now",
+        "SEVENTEEN - HIT", "BLACKPINK - BOOMBAYAH",
+        "Zedd - Clarity", "NMIXX - O.O", "Calvin Harris - Summer",
+        "BIGBANG - Bang Bang Bang", "David Guetta - Titanium"
     ]
 }
 
-st.title("🎶 기분별 랜덤 노래 추천기 🎶")
-st.markdown("✨ 지금 기분에 맞는 노래를 랜덤으로 추천해줄게요! ✨")
-
-# 감정 선택
-mood = st.radio(
-    "지금 기분은 어떤가요? 😍",
-    list(songs.keys()),
-    horizontal=True
-)
-
-if st.button("🎵 노래 추천받기"):
-    # 해당 감정에서 랜덤으로 5곡 뽑기
-    recommended = random.sample(songs[mood], 5)
-    
-    st.subheader(f"{mood} 기분일 때 추천하는 노래 🎧")
-    
-    cols = st.columns(5)
-    for i, col in enumerate(cols):
-        with col:
-            st.markdown(f"""
-            <div style='background-color:#fef6ff;
-                        border-radius:15px;
-                        padding:20px;
-                        text-align:center;
-                        box-shadow:2px 2px 8px rgba(0,0,0,0.1);'>
-                <h3>🎵</h3>
-                <p style='font-size:16px;'>{recommended[i]}</p>
-            </div>
-            """, unsafe_allow_html=True)
+# -----------------------
+# 노래 추천
+# -----------------------
+if selected_mood:
+    st.subheader("✨ 노래 추천 리스트 ✨")
+    if st.button("노래 추천받기 🎶"):
+        recommended = random.sample(songs[selected_mood], 5)
+        for idx, song in enumerate(recommended, 1):
+            st.markdown(f"**{idx}. {song}**")

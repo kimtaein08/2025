@@ -1,62 +1,83 @@
 import streamlit as st
 import random
 
-st.set_page_config(page_title="Mood Song Recommender", page_icon="🎶", layout="wide")
+st.set_page_config(page_title="🎵 기분별 노래 추천", layout="wide")
 
-st.title("🌸 기분에 따라 노래 추천 🎧")
-st.write("당신의 기분을 선택하면 딱 맞는 노래를 랜덤으로 추천해드려요! 💕")
+# 감정 리스트
+emotions = ["😊 기분 좋을 때", "😢 슬플 때", "💓 설렐 때", "😡 화날 때", "🍵 차분할 때"]
 
-# 기분 리스트
-moods = ["😊 기분 좋을 때", "😢 슬플 때", "💓 설렐 때", "😡 화날 때", "🌙 차분할 때"]
-
-# 선택창
-mood = st.selectbox("👉 지금 기분을 골라주세요!", moods)
-
-# 노래 데이터베이스 (앨범커버 + 유튜브링크)
+# 노래 데이터 (K-POP + POP)
 songs = {
     "😊 기분 좋을 때": [
-        {"title": "BTS - Dynamite", "img": "https://i.scdn.co/image/ab67616d0000b2738b3e8ed4a47d18495df90c29", "url": "https://youtu.be/gdZLi9oWNZg"},
-        {"title": "Red Velvet - Red Flavor", "img": "https://i.scdn.co/image/ab67616d0000b273648efa7a4182a26c6f9f3ebf", "url": "https://youtu.be/WyiIGEHQP8o"},
-        {"title": "Pharrell Williams - Happy", "img": "https://i.scdn.co/image/ab67616d0000b2733b3c8a5e0c5d0ff9a9a90e02", "url": "https://youtu.be/ZbZSe6N_BXs"},
-        {"title": "TWICE - What is Love?", "img": "https://i.scdn.co/image/ab67616d0000b273a1e1f98d342fcf0a3ee9bb11", "url": "https://youtu.be/i0p1bmr0EmE"},
-        {"title": "Bruno Mars - 24K Magic", "img": "https://i.scdn.co/image/ab67616d0000b273fa1f3a1962fa2a343b3b0a06", "url": "https://youtu.be/UqyT8IEBkvY"},
+        ("NewJeans - Super Shy", "https://youtu.be/ArmDp-zijuc"),
+        ("Red Velvet - Red Flavor", "https://youtu.be/WyiIGEHQP8o"),
+        ("Bruno Mars - Treasure", "https://youtu.be/nPvuNsRccVw"),
+        ("Dua Lipa - Don't Start Now", "https://youtu.be/oygrmJFKYZY"),
+        ("SEVENTEEN - Very Nice", "https://youtu.be/cMNw9ianE9M"),
+        ("Pharrell Williams - Happy", "https://youtu.be/ZbZSe6N_BXs"),
     ],
     "😢 슬플 때": [
-        {"title": "Adele - Someone Like You", "img": "https://i.scdn.co/image/ab67616d0000b273d0c7e3f4f3d04c9a1b3e0b79", "url": "https://youtu.be/hLQl3WQQoQ0"},
-        {"title": "AKMU - 어떻게 이별까지 사랑하겠어", "img": "https://i.scdn.co/image/ab67616d0000b273bcd2f4d3f37c0c2f1f4d21b5", "url": "https://youtu.be/mv2R5Fp92zQ"},
-        {"title": "Billie Eilish - when the party's over", "img": "https://i.scdn.co/image/ab67616d0000b273f8bb9a8e5d0c3573e70c6e1f", "url": "https://youtu.be/pbMwTqkKSps"},
-        {"title": "IU - 밤편지", "img": "https://i.scdn.co/image/ab67616d0000b27353c585dd49007f4619052a9e", "url": "https://youtu.be/BzYnNdJhZQw"},
-        {"title": "Coldplay - Fix You", "img": "https://i.scdn.co/image/ab67616d0000b2735f6f9f64f2a7af38d5c4b8b2", "url": "https://youtu.be/k4V3Mo61fJM"},
+        ("Adele - Someone Like You", "https://youtu.be/hLQl3WQQoQ0"),
+        ("IU - 밤편지", "https://youtu.be/BzYnNdJhZQw"),
+        ("Baekhyun - UN Village", "https://youtu.be/-mBge5RzxFg"),
+        ("Billie Eilish - lovely", "https://youtu.be/V1Pl8CzNzCw"),
+        ("Paul Kim - 모든 날, 모든 순간", "https://youtu.be/OMgPQwr2z-k"),
+        ("Sam Smith - Too Good At Goodbyes", "https://youtu.be/J_ub7Etch2U"),
     ],
     "💓 설렐 때": [
-        {"title": "SEVENTEEN - Pretty U", "img": "https://i.scdn.co/image/ab67616d0000b273baf2231f1d6b4a5905a9d3f6", "url": "https://youtu.be/J-wFp43XOrA"},
-        {"title": "Taylor Swift - Love Story", "img": "https://i.scdn.co/image/ab67616d0000b2732b93e3d1d40f4bc69d5c6f1d", "url": "https://youtu.be/8xg3vE8Ie_E"},
-        {"title": "TWICE - Cheer Up", "img": "https://i.scdn.co/image/ab67616d0000b2732cc5a2ddcaad419acf680cf7", "url": "https://youtu.be/c7rCyll5AeY"},
-        {"title": "Justin Bieber - Baby", "img": "https://i.scdn.co/image/ab67616d0000b273267f68d05ac9f94e5b0e8d07", "url": "https://youtu.be/kffacxfA7G4"},
-        {"title": "IVE - Love Dive", "img": "https://i.scdn.co/image/ab67616d0000b27380f9f9ce59efc2f2e81c4e4f", "url": "https://youtu.be/Y8JFxS1HlDo"},
+        ("Taylor Swift - Love Story", "https://youtu.be/8xg3vE8Ie_E"),
+        ("IVE - LOVE DIVE", "https://youtu.be/Y8JFxS1HlDo"),
+        ("Justin Bieber - Baby", "https://youtu.be/kffacxfA7G4"),
+        ("TWICE - What is Love?", "https://youtu.be/i0p1bmr0EmE"),
+        ("BTS - Boy With Luv", "https://youtu.be/XsX3ATc3FbA"),
+        ("Shawn Mendes - There's Nothing Holdin’ Me Back", "https://youtu.be/dT2owtxkU8k"),
     ],
     "😡 화날 때": [
-        {"title": "Eminem - Lose Yourself", "img": "https://i.scdn.co/image/ab67616d0000b27360eaf6d3eab1ddf1b0b0b812", "url": "https://youtu.be/_Yhyp-_hX2s"},
-        {"title": "Stray Kids - God's Menu", "img": "https://i.scdn.co/image/ab67616d0000b273e2e2e86e5b78a1e1c4e3b9f5", "url": "https://youtu.be/TQTlCHxyuu8"},
-        {"title": "Linkin Park - Numb", "img": "https://i.scdn.co/image/ab67616d0000b273a4e6f1b1f94c3b7f7d98b5a8", "url": "https://youtu.be/kXYiU_JCYtU"},
-        {"title": "BLACKPINK - Kill This Love", "img": "https://i.scdn.co/image/ab67616d0000b273ccf7ea50ccaa43d562e8d7aa", "url": "https://youtu.be/2S24-y0Ij3Y"},
-        {"title": "Imagine Dragons - Believer", "img": "https://i.scdn.co/image/ab67616d0000b27357f6a184044c10f2e0cfdce9", "url": "https://youtu.be/7wtfhZwyrcc"},
+        ("Eminem - Lose Yourself", "https://youtu.be/_Yhyp-_hX2s"),
+        ("BLACKPINK - Kill This Love", "https://youtu.be/2S24-y0Ij3Y"),
+        ("ITZY - WANNABE", "https://youtu.be/fE2h3lGlOsk"),
+        ("Linkin Park - Numb", "https://youtu.be/kXYiU_JCYtU"),
+        ("Doja Cat - Boss Bitch", "https://youtu.be/jQK7JbL0wU4"),
+        ("Stray Kids - Maniac", "https://youtu.be/OvioeS1ZZ7o"),
     ],
-    "🌙 차분할 때": [
-        {"title": "Lauv - I Like Me Better", "img": "https://i.scdn.co/image/ab67616d0000b273a21658d2b96c6f6d5e2a8d9e", "url": "https://youtu.be/BcqxLCWn-CE"},
-        {"title": "백예린 - Square", "img": "https://i.scdn.co/image/ab67616d0000b273e6a28a3f0f6f964c563e1ee2", "url": "https://youtu.be/hZmoMyFXDoI"},
-        {"title": "Ed Sheeran - Perfect", "img": "https://i.scdn.co/image/ab67616d0000b2737a3b293b2b1c06e453997a79", "url": "https://youtu.be/2Vv-BfVoq4g"},
-        {"title": "EXO - Universe", "img": "https://i.scdn.co/image/ab67616d0000b27384ad5e72982f90217c4f39f8", "url": "https://youtu.be/Brbtm88vkA0"},
-        {"title": "John Legend - All of Me", "img": "https://i.scdn.co/image/ab67616d0000b273c07f7a6e9f2a1b3f5e2d73b2", "url": "https://youtu.be/450p7goxZqg"},
-    ]
+    "🍵 차분할 때": [
+        ("Dean - Instagram", "https://youtu.be/wKyMIrBClYw"),
+        ("Lauv - I Like Me Better", "https://youtu.be/BcqxLCWn-CE"),
+        ("IU - Palette", "https://youtu.be/d9IxdwEFk1c"),
+        ("Crush - 잊을만하면", "https://youtu.be/_eeMdzKu5iU"),
+        ("Ed Sheeran - Perfect", "https://youtu.be/2Vv-BfVoq4g"),
+        ("Sam Smith - Stay With Me", "https://youtu.be=pB-5XG-DbAA"),
+    ],
 }
 
-# 버튼 클릭 시 추천
-if st.button("🎁 노래 추천받기"):
-    selected_songs = random.sample(songs[mood], 5)
-    cols = st.columns(5)
-    for idx, song in enumerate(selected_songs):
-        with cols[idx]:
-            st.image(song["img"], use_container_width=True)
-            st.markdown(f"**{song['title']}**")
-            st.markdown(f"[▶️ 듣기]({song['url']})")
+# 제목
+st.markdown("<h1 style='text-align: center; color: #FF69B4;'>🎶 오늘의 기분별 노래 추천 🎶</h1>", unsafe_allow_html=True)
+
+# 감정 선택
+emotion = st.selectbox("👉 지금 기분을 골라주세요!", emotions)
+
+# 추천 버튼
+if st.button("🌟 노래 추천받기 🌟"):
+    st.markdown(f"<h3 style='text-align: center;'>당신의 기분에 맞는 노래 추천 리스트 💖</h3>", unsafe_allow_html=True)
+
+    # 노래 5개 랜덤 추출
+    recommended = random.sample(songs[emotion], 5)
+
+    # 카드 스타일 추천 표시
+    for title, link in recommended:
+        st.markdown(
+            f"""
+            <div style='
+                background-color:#FFF0F5;
+                border-radius:15px;
+                padding:15px;
+                margin:10px 0;
+                box-shadow:2px 2px 8px rgba(0,0,0,0.1);
+                font-size:18px;
+            '>
+                🎧 <b>{title}</b><br>
+                👉 <a href="{link}" target="_blank">유튜브에서 듣기</a>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )

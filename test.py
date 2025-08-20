@@ -1,72 +1,53 @@
 import streamlit as st
 import random
 
-st.set_page_config(page_title="Mood-based Music Recommender", layout="wide")
+st.set_page_config(page_title="Mood Music Recommender", page_icon="🎧", layout="wide")
 
-st.title("🎧 기분에 따라 노래 추천해주는 사이트 🎶")
-st.markdown("오늘 기분은 어때? 아래에서 골라봐! 😆🥲🤩😌🔥")
+st.title("🎶 기분 따라 노래 추천 🎶")
+st.write("기분에 맞는 노래를 랜덤으로 추천해드려요! 💖")
 
-# -----------------------
-# 기분 선택 UI (이모지 버튼 스타일)
-# -----------------------
-moods = {
-    "행복해요 😆": "happy",
-    "슬퍼요 🥲": "sad",
-    "신나요 🤩": "excited",
-    "차분해요 😌": "calm",
-    "열정적이에요 🔥": "energetic"
-}
+# 감정 리스트
+moods = ["😊 기분 좋을 때", "😢 슬플 때", "💓 설렐 때", "😡 화날 때", "🍵 차분할 때"]
 
-selected_mood = st.session_state.get("selected_mood", None)
+# 감정 선택 (드롭다운)
+selected_mood = st.selectbox("👉 지금 당신의 기분은?", moods)
 
-cols = st.columns(len(moods))
-for idx, (emoji_label, mood_value) in enumerate(moods.items()):
-    if cols[idx].button(emoji_label):
-        st.session_state.selected_mood = mood_value
-        selected_mood = mood_value
-
-# -----------------------
-# 노래 데이터베이스
-# -----------------------
+# 감정별 노래 리스트
 songs = {
-    "happy": [
-        "BTS - Dynamite", "Red Velvet - Red Flavor", "Bruno Mars - Treasure",
-        "TWICE - Cheer Up", "Pharrell Williams - Happy",
-        "SEVENTEEN - Very Nice", "Katy Perry - Firework",
-        "IVE - I AM", "Taylor Swift - Shake It Off", "BLACKPINK - As If It’s Your Last"
+    "😊 기분 좋을 때": [
+        "K-POP: NewJeans - Hype Boy", "K-POP: IVE - I AM", "K-POP: ITZY - DALLA DALLA", 
+        "POP: Pharrell Williams - Happy", "POP: Katy Perry - Firework", 
+        "POP: Dua Lipa - Don’t Start Now", "K-POP: BTS - Dynamite",
+        "K-POP: SEVENTEEN - Very Nice", "POP: Justin Timberlake - Can’t Stop The Feeling"
     ],
-    "sad": [
-        "Adele - Someone Like You", "IU - Love Poem", "Billie Eilish - everything i wanted",
-        "Baekhyun - UN Village", "Sam Smith - Too Good at Goodbyes",
-        "Rosé - Gone", "Dean - instagram", "Coldplay - Fix You",
-        "Heize - You, Clouds, Rain", "Justin Bieber - Ghost"
+    "😢 슬플 때": [
+        "K-POP: AKMU - 어떻게 이별까지 사랑하겠어", "K-POP: 태연 - Fine", "K-POP: 백현 - UN Village",
+        "POP: Adele - Someone Like You", "POP: Lewis Capaldi - Someone You Loved", 
+        "POP: Sam Smith - Too Good At Goodbyes", "K-POP: IU - 밤편지",
+        "K-POP: 폴킴 - 모든 날, 모든 순간", "POP: Coldplay - Fix You"
     ],
-    "excited": [
-        "Stray Kids - God’s Menu", "BLACKPINK - DDU-DU DDU-DU", "Imagine Dragons - Believer",
-        "ITZY - Wannabe", "PSY - Gangnam Style",
-        "aespa - Next Level", "EXO - Power", "Beyoncé - Run the World (Girls)",
-        "NCT 127 - Kick It", "Lady Gaga - Poker Face"
+    "💓 설렐 때": [
+        "K-POP: TWICE - What is Love?", "K-POP: Red Velvet - Ice Cream Cake", "K-POP: 아이유 - 금요일에 만나요",
+        "POP: Taylor Swift - Lover", "POP: Carly Rae Jepsen - Call Me Maybe", 
+        "POP: Bruno Mars - Just The Way You Are", "K-POP: 오마이걸 - Dun Dun Dance",
+        "K-POP: 세븐틴 - Pretty U", "POP: Shawn Mendes - Senorita"
     ],
-    "calm": [
-        "Paul Kim - Every Day, Every Moment", "AKMU - Melted", "Ed Sheeran - Perfect",
-        "Taeyeon - Fine", "Lauv - I Like Me Better",
-        "Baek Yerin - Square", "Shawn Mendes - In My Blood (Acoustic)",
-        "IU - Through the Night", "John Legend - All of Me", "DAY6 - You Were Beautiful"
+    "😡 화날 때": [
+        "K-POP: CL - The Baddest Female", "K-POP: BLACKPINK - Kill This Love", "K-POP: BTS - MIC Drop",
+        "POP: Billie Eilish - Bad Guy", "POP: Eminem - Lose Yourself", 
+        "POP: Linkin Park - Numb", "K-POP: ITZY - WANNABE",
+        "K-POP: Jessi - NUNU NANA", "POP: Rage Against The Machine - Killing In The Name"
     ],
-    "energetic": [
-        "TWICE - Fancy", "BTS - MIC Drop", "Dua Lipa - Don’t Start Now",
-        "SEVENTEEN - HIT", "BLACKPINK - BOOMBAYAH",
-        "Zedd - Clarity", "NMIXX - O.O", "Calvin Harris - Summer",
-        "BIGBANG - Bang Bang Bang", "David Guetta - Titanium"
+    "🍵 차분할 때": [
+        "K-POP: 백예린 - 그건 아마 우리의 잘못은 아닐 거야", "K-POP: 헤이즈 - 비도 오고 그래서", "K-POP: 아이유 - 무릎",
+        "POP: Billie Eilish - Ocean Eyes", "POP: Ed Sheeran - Perfect", 
+        "POP: Norah Jones - Don’t Know Why", "K-POP: 정승환 - 이 바보야",
+        "K-POP: 10cm - 사랑은 은하수 다방에서", "POP: John Mayer - Gravity"
     ]
 }
 
-# -----------------------
-# 노래 추천
-# -----------------------
-if selected_mood:
-    st.subheader("✨ 노래 추천 리스트 ✨")
-    if st.button("노래 추천받기 🎶"):
-        recommended = random.sample(songs[selected_mood], 5)
-        for idx, song in enumerate(recommended, 1):
-            st.markdown(f"**{idx}. {song}**")
+if st.button("🎧 노래 추천받기"):
+    st.subheader(f"{selected_mood} 들으면 좋은 노래 💿")
+    recommended = random.sample(songs[selected_mood], 5)  # 랜덤 5곡
+    for idx, song in enumerate(recommended, 1):
+        st.write(f"{idx}. {song}")
